@@ -1,0 +1,261 @@
+/* RSU Tax Calculator — styles */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  margin: 0;
+  padding: 16px;
+}
+
+h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #cc0000;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+/* ── cards ── */
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.10);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.card h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: #888;
+  margin: 0 0 12px;
+}
+
+/* ── controls bar ── */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: .4px;
+}
+
+.field input {
+  border: 1px solid #d0d0d8;
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 13px;
+  width: 160px;
+  outline: none;
+  transition: border-color .15s;
+}
+
+.field input:focus { border-color: #cc0000; }
+
+/* ── table ── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  border-collapse: collapse;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+/* default header cell */
+thead tr th {
+  background: #3a3a3a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  padding: 8px 10px;
+  text-align: right;
+  border-right: 1px solid rgba(255,255,255,.10);
+}
+
+thead tr th:first-child { text-align: left; border-radius: 4px 0 0 0; }
+thead tr th:last-child  { border-radius: 0 4px 0 0; border-right: none; }
+
+thead tr.group-row th {
+  font-size: 10px;
+  color: #ddd;
+  letter-spacing: .6px;
+  padding: 4px 10px;
+}
+
+/* ── section header row (top colspan row) — 4 distinct grey shades ── */
+.th-sect-a { background: #3a3a3a; text-align: center; }
+.th-sect-b { background: #525252; text-align: center; }
+.th-sect-c { background: #444444; text-align: center; }
+.th-sect-d { background: #5c5c5c; text-align: center; }
+.th-del    { background: #222; width: 28px; }
+
+/* ── sub-header row — slightly lighter than their section ── */
+.th-sub-a { background: #484848; }
+.th-sub-b { background: #606060; }
+.th-sub-c { background: #525252; }
+.th-sub-d { background: #6a6a6a; }
+
+/* ── body rows ── */
+tbody tr td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eef;
+  text-align: right;
+  vertical-align: middle;
+}
+
+tbody tr td:first-child { text-align: left; }
+
+tbody tr:hover td { background: #fafbff; }
+
+/* ── TOTAL row — light blue, bold black ── */
+.total-row td {
+  background: #cce5ff;
+  font-weight: 700;
+  color: #000;
+  border-top: 2px solid #6aadff;
+  border-bottom: none;
+}
+
+/* ── cell types ── */
+td input.cell-input {
+  border: none;
+  border-bottom: 1px dashed #ccc;
+  background: transparent;
+  width: 100%;
+  text-align: right;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 0 2px;
+  outline: none;
+  color: #1a1a2e;
+  transition: border-color .15s;
+}
+
+td input.cell-input:focus { border-bottom-color: #cc0000; }
+
+.computed  { color: #334; }
+.tag-input { background: #fff9f0; }
+.tag-calc  { background: #f0f4ff; }
+
+/* ── summary metric cards ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.metric {
+  border: 1px solid #e8e8f0;
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.metric .label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #888;
+  letter-spacing: .4px;
+  margin-bottom: 4px;
+}
+
+.metric .value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.metric.highlight            { border-color: #f4b942; background: #fffbf0; }
+.metric.highlight .value     { color: #c07800; }
+.metric.danger               { border-color: #f4b4b4; background: #fff5f5; }
+.metric.danger .value        { color: #cc0000; }
+.metric.good                 { border-color: #b4f4c8; background: #f0fff5; }
+.metric.good .value          { color: #007733; }
+
+/* ── buttons ── */
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+button {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 14px;
+  transition: opacity .15s;
+}
+
+button:hover { opacity: .85; }
+
+.btn-add    { background: #1a1a2e; color: #fff; }
+.btn-export { background: #cc0000; color: #fff; margin-left: auto; }
+
+.del-btn {
+  background: transparent;
+  color: #bbb;
+  padding: 0 6px;
+  font-size: 16px;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+}
+
+.del-btn:hover { color: #cc0000; }
+
+.note {
+  font-size: 11px;
+  color: #999;
+  margin-top: 6px;
+}
+
+/* ── legend ── */
+.legend {
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}

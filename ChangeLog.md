@@ -6,6 +6,16 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.1.0] 2026-06-19 — Style refactor and visual polish
+
+### Changed
+- Extracted all CSS into a separate `rsu-calculator.css` file; HTML now links it via `<link>`
+- TOTAL row: fill changed to light blue (`#cce5ff`), font changed to bold black (`#000`)
+- Table section headers (A/B/C/D) now use four distinct shades of grey instead of coloured backgrounds
+- Renamed summary card "Cash Returned to You" → "Cash balance returned"
+
+---
+
 ## [1.0.0] 2026-06-19 — Initial release
 
 ### Added

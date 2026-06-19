@@ -4,254 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSU Tax Calculator — Broadcom</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    font-size: 13px;
-    background: #f0f2f5;
-    color: #1a1a2e;
-    margin: 0;
-    padding: 16px;
-  }
-
-  h1 {
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0 0 4px;
-    color: #cc0000;
-  }
-
-  .subtitle {
-    color: #666;
-    font-size: 12px;
-    margin-bottom: 20px;
-  }
-
-  .card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.10);
-    padding: 16px 20px;
-    margin-bottom: 16px;
-  }
-
-  .card h2 {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    color: #888;
-    margin: 0 0 12px;
-  }
-
-  /* ── vesting date + tax rate bar ── */
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: flex-end;
-  }
-
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .field label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #888;
-    letter-spacing: .4px;
-  }
-
-  .field input {
-    border: 1px solid #d0d0d8;
-    border-radius: 5px;
-    padding: 6px 10px;
-    font-size: 13px;
-    width: 160px;
-    outline: none;
-    transition: border-color .15s;
-  }
-
-  .field input:focus { border-color: #cc0000; }
-
-  /* ── table ── */
-  .table-wrap { overflow-x: auto; }
-
-  table {
-    border-collapse: collapse;
-    min-width: 100%;
-    white-space: nowrap;
-  }
-
-  thead tr th {
-    background: #1a1a2e;
-    color: #fff;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    padding: 8px 10px;
-    text-align: right;
-    border-right: 1px solid rgba(255,255,255,.08);
-  }
-
-  thead tr th:first-child { text-align: left; border-radius: 4px 0 0 0; }
-  thead tr th:last-child  { border-radius: 0 4px 0 0; border-right: none; }
-
-  thead tr.group-row th {
-    background: #2d2d4e;
-    font-size: 10px;
-    color: #aac;
-    letter-spacing: .6px;
-    padding: 4px 10px;
-  }
-
-  tbody tr td {
-    padding: 6px 10px;
-    border-bottom: 1px solid #eef;
-    text-align: right;
-    vertical-align: middle;
-  }
-
-  tbody tr td:first-child { text-align: left; }
-
-  tbody tr:hover td { background: #fafbff; }
-
-  tbody tr.total-row td {
-    background: #f5f0ff;
-    font-weight: 700;
-    border-top: 2px solid #9370db;
-    border-bottom: none;
-  }
-
-  /* input cells */
-  td input.cell-input {
-    border: none;
-    border-bottom: 1px dashed #ccc;
-    background: transparent;
-    width: 100%;
-    text-align: right;
-    font-size: 13px;
-    font-family: inherit;
-    padding: 0 2px;
-    outline: none;
-    color: #1a1a2e;
-    transition: border-color .15s;
-  }
-
-  td input.cell-input:focus { border-bottom-color: #cc0000; }
-
-  /* computed cells */
-  .computed { color: #334; }
-
-  .tag-input  { background: #fff9f0; }
-  .tag-calc   { background: #f0f4ff; }
-
-  /* ── summary grid ── */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
-
-  .metric {
-    border: 1px solid #e8e8f0;
-    border-radius: 6px;
-    padding: 12px 14px;
-  }
-
-  .metric .label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #888;
-    letter-spacing: .4px;
-    margin-bottom: 4px;
-  }
-
-  .metric .value {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a1a2e;
-  }
-
-  .metric.highlight { border-color: #f4b942; background: #fffbf0; }
-  .metric.highlight .value { color: #c07800; }
-
-  .metric.danger { border-color: #f4b4b4; background: #fff5f5; }
-  .metric.danger .value { color: #cc0000; }
-
-  .metric.good { border-color: #b4f4c8; background: #f0fff5; }
-  .metric.good .value { color: #007733; }
-
-  /* ── buttons ── */
-  .btn-row {
-    display: flex;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  button {
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    border: none;
-    border-radius: 5px;
-    padding: 7px 14px;
-    transition: opacity .15s;
-  }
-
-  button:hover { opacity: .85; }
-
-  .btn-add    { background: #1a1a2e; color: #fff; }
-  .btn-remove { background: #f0f0f8; color: #555; }
-  .btn-export { background: #cc0000; color: #fff; margin-left: auto; }
-
-  .del-btn {
-    background: transparent;
-    color: #bbb;
-    padding: 0 6px;
-    font-size: 16px;
-    line-height: 1;
-    border: none;
-    cursor: pointer;
-  }
-  .del-btn:hover { color: #cc0000; }
-
-  .note {
-    font-size: 11px;
-    color: #999;
-    margin-top: 6px;
-  }
-
-  /* legend */
-  .legend {
-    display: flex;
-    gap: 14px;
-    font-size: 11px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-  }
-
-  .legend span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    display: inline-block;
-  }
-</style>
+<link rel="stylesheet" href="rsu-calculator.css">
 </head>
 <body>
 
@@ -291,33 +44,33 @@
         <tr>
           <th rowspan="2" style="text-align:left">Grant / Tranche</th>
           <!-- Section A -->
-          <th colspan="3" style="text-align:center;background:#cc0000">A — RSU Grant</th>
+          <th colspan="3" class="th-sect-a">A — RSU Grant</th>
           <!-- Section B -->
-          <th colspan="2" style="text-align:center;background:#2255aa">B — Shares</th>
+          <th colspan="2" class="th-sect-b">B — Shares</th>
           <!-- Section C -->
-          <th colspan="5" style="text-align:center;background:#226644">C — Sell-to-Cover</th>
+          <th colspan="5" class="th-sect-c">C — Sell-to-Cover</th>
           <!-- Section D -->
-          <th colspan="3" style="text-align:center;background:#885500">D — Tax</th>
+          <th colspan="3" class="th-sect-d">D — Tax</th>
           <!-- delete -->
-          <th rowspan="2" style="background:#111;width:28px"></th>
+          <th rowspan="2" class="th-del"></th>
         </tr>
         <tr class="group-row">
-          <th style="background:#cc2222">RSU Gross</th>
-          <th style="background:#cc2222">Vest Price</th>
-          <th style="background:#cc2222">Gross Value</th>
+          <th class="th-sub-a">RSU Gross</th>
+          <th class="th-sub-a">Vest Price</th>
+          <th class="th-sub-a">Gross Value</th>
 
-          <th style="background:#3366bb">Sold to Cover</th>
-          <th style="background:#3366bb">Net Shares</th>
+          <th class="th-sub-b">Sold to Cover</th>
+          <th class="th-sub-b">Net Shares</th>
 
-          <th style="background:#338866">Cost Basis</th>
-          <th style="background:#338866">Sale Price</th>
-          <th style="background:#338866">Sale Value</th>
-          <th style="background:#338866">Fee</th>
-          <th style="background:#338866">Net Proceeds</th>
+          <th class="th-sub-c">Cost Basis</th>
+          <th class="th-sub-c">Sale Price</th>
+          <th class="th-sub-c">Sale Value</th>
+          <th class="th-sub-c">Fee</th>
+          <th class="th-sub-c">Net Proceeds</th>
 
-          <th style="background:#996600">Gain on S2C</th>
-          <th style="background:#996600">Actual Tax Paid</th>
-          <th style="background:#996600">Effective Rate</th>
+          <th class="th-sub-d">Gain on S2C</th>
+          <th class="th-sub-d">Actual Tax Paid</th>
+          <th class="th-sub-d">Effective Rate</th>
         </tr>
       </thead>
       <tbody id="tableBody">
@@ -381,7 +134,7 @@
       <div class="value" id="sum-proceeds">—</div>
     </div>
     <div class="metric good">
-      <div class="label">Cash Returned to You</div>
+      <div class="label">Cash balance returned</div>
       <div class="value" id="sum-cashBack">—</div>
     </div>
   </div>
@@ -417,13 +170,13 @@ function numOf(id) {
 // ── row calculation ────────────────────────────────────────
 function calcRow(r) {
   const c = {};
-  c.grossVal   = r.gross * r.vestPrice;                          // A
-  c.netShares  = r.gross - r.s2c;                                // B
-  c.costBasis  = r.s2c * r.vestPrice;                            // C
-  c.saleVal    = r.s2c * r.salePrice;                            // C
-  c.netProc    = c.saleVal - r.fee;                              // C
-  c.gain       = c.netProc - c.costBasis;                        // D
-  c.effRate    = r.gross > 0 ? (r.actualTax / c.grossVal) * 100 : 0; // D
+  c.grossVal   = r.gross * r.vestPrice;
+  c.netShares  = r.gross - r.s2c;
+  c.costBasis  = r.s2c * r.vestPrice;
+  c.saleVal    = r.s2c * r.salePrice;
+  c.netProc    = c.saleVal - r.fee;
+  c.gain       = c.netProc - c.costBasis;
+  c.effRate    = r.gross > 0 ? (r.actualTax / c.grossVal) * 100 : 0;
   return c;
 }
 
@@ -472,15 +225,12 @@ function updateField(id, field, val) {
   const r = rows.find(r => r.id === id);
   if (!r) return;
   r[field] = val;
-  // re-render just this row
   const existing = document.getElementById("row-" + id);
-  const newTr = renderRow(r);
-  existing.replaceWith(newTr);
+  existing.replaceWith(renderRow(r));
   updateTotals();
 }
 
 function updateTotals() {
-  const sym = document.getElementById("currSym").value || "$";
   const taxRate = numOf("taxRate") / 100;
 
   let totGross = 0, totGrossVal = 0, totS2C = 0, totNet = 0;
@@ -506,37 +256,34 @@ function updateTotals() {
   const overWith   = totTaxPaid - shouldPay;
   const cashBack   = totNetProc - totTaxPaid;
 
-  // footer totals
-  setText("tot-gross",      totGross);
-  setText("tot-grossVal",   fmt(totGrossVal, 3));
-  setText("tot-s2c",        totS2C);
-  setText("tot-net",        totNet);
-  setText("tot-costBasis",  fmt(totCostBasis, 2));
-  setText("tot-saleVal",    fmt(totSaleVal, 2));
-  setText("tot-fee",        fmt(totFee, 3));
-  setText("tot-netProceeds",fmt(totNetProc, 2));
-  setText("tot-gain",       fmt(totGain, 2));
-  setText("tot-taxPaid",    fmt(totTaxPaid, 2));
-  setText("tot-effRate",    fmtPct(totEffRate));
+  setText("tot-gross",       totGross);
+  setText("tot-grossVal",    fmt(totGrossVal, 3));
+  setText("tot-s2c",         totS2C);
+  setText("tot-net",         totNet);
+  setText("tot-costBasis",   fmt(totCostBasis, 2));
+  setText("tot-saleVal",     fmt(totSaleVal, 2));
+  setText("tot-fee",         fmt(totFee, 3));
+  setText("tot-netProceeds", fmt(totNetProc, 2));
+  setText("tot-gain",        fmt(totGain, 2));
+  setText("tot-taxPaid",     fmt(totTaxPaid, 2));
+  setText("tot-effRate",     fmtPct(totEffRate));
 
-  // summary cards
-  setText("sum-grossVal",   fmt(totGrossVal, 2));
-  setText("sum-taxRate",    numOf("taxRate").toFixed(2) + "%");
-  setText("sum-shouldPay",  fmt(shouldPay, 2));
-  setText("sum-didPay",     fmt(totTaxPaid, 2));
-  setText("sum-overwithheld", fmt(Math.abs(overWith), 2));
-  setText("sum-proceeds",   fmt(totNetProc, 2));
-  setText("sum-cashBack",   fmt(cashBack, 2));
+  setText("sum-grossVal",    fmt(totGrossVal, 2));
+  setText("sum-taxRate",     numOf("taxRate").toFixed(2) + "%");
+  setText("sum-shouldPay",   fmt(shouldPay, 2));
+  setText("sum-didPay",      fmt(totTaxPaid, 2));
+  setText("sum-overwithheld",fmt(Math.abs(overWith), 2));
+  setText("sum-proceeds",    fmt(totNetProc, 2));
+  setText("sum-cashBack",    fmt(cashBack, 2));
 
-  // flip over-withheld card colour
-  const card = document.getElementById("card-overwithheld");
+  const card  = document.getElementById("card-overwithheld");
   const label = card.querySelector(".label");
   if (overWith < -0.01) {
     card.className = "metric good";
     label.textContent = "Schwab Under-Withheld Tax (you owe)";
   } else {
     card.className = "metric danger";
-    label.textContent = "Schwab Over-Withheld Tax (refund to you)";
+    label.textContent = "Schwab Over-Withheld Tax (Payroll Refund?)";
   }
 }
 
@@ -583,7 +330,7 @@ function exportCSV() {
       r.label, r.gross, r.vestPrice, c.grossVal.toFixed(3),
       r.s2c, c.netShares, c.costBasis.toFixed(2), r.salePrice,
       c.saleVal.toFixed(2), r.fee.toFixed(3), c.netProc.toFixed(2),
-      c.gain.toFixed(2), r.actualTax.toFixed(2), (c.effRate).toFixed(2)+"%"
+      c.gain.toFixed(2), r.actualTax.toFixed(2), c.effRate.toFixed(2) + "%"
     ].join(","));
   }
   const blob = new Blob([lines.join("\n")], { type: "text/csv" });
@@ -596,7 +343,6 @@ function exportCSV() {
 // ── wire up live-updating inputs ──────────────────────────
 document.getElementById("taxRate").addEventListener("input", updateTotals);
 document.getElementById("currSym").addEventListener("input", () => {
-  // full re-render needed for currency symbol
   const tbody = document.getElementById("tableBody");
   tbody.innerHTML = "";
   for (const r of rows) tbody.appendChild(renderRow(r));
