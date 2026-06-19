@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSU Tax Calculator — Broadcom</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    margin: 0;
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    color: #cc0000;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.10);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+
+  .card h2 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #888;
+    margin: 0 0 12px;
+  }
+
+  /* ── vesting date + tax rate bar ── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: .4px;
+  }
+
+  .field input {
+    border: 1px solid #d0d0d8;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 13px;
+    width: 160px;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  .field input:focus { border-color: #cc0000; }
+
+  /* ── table ── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    border-collapse: collapse;
+    min-width: 100%;
+    white-space: nowrap;
+  }
+
+  thead tr th {
+    background: #1a1a2e;
+    color: #fff;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    padding: 8px 10px;
+    text-align: right;
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+
+  thead tr th:first-child { text-align: left; border-radius: 4px 0 0 0; }
+  thead tr th:last-child  { border-radius: 0 4px 0 0; border-right: none; }
+
+  thead tr.group-row th {
+    background: #2d2d4e;
+    font-size: 10px;
+    color: #aac;
+    letter-spacing: .6px;
+    padding: 4px 10px;
+  }
+
+  tbody tr td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #eef;
+    text-align: right;
+    vertical-align: middle;
+  }
+
+  tbody tr td:first-child { text-align: left; }
+
+  tbody tr:hover td { background: #fafbff; }
+
+  tbody tr.total-row td {
+    background: #f5f0ff;
+    font-weight: 700;
+    border-top: 2px solid #9370db;
+    border-bottom: none;
+  }
+
+  /* input cells */
+  td input.cell-input {
+    border: none;
+    border-bottom: 1px dashed #ccc;
+    background: transparent;
+    width: 100%;
+    text-align: right;
+    font-size: 13px;
+    font-family: inherit;
+    padding: 0 2px;
+    outline: none;
+    color: #1a1a2e;
+    transition: border-color .15s;
+  }
+
+  td input.cell-input:focus { border-bottom-color: #cc0000; }
+
+  /* computed cells */
+  .computed { color: #334; }
+
+  .tag-input  { background: #fff9f0; }
+  .tag-calc   { background: #f0f4ff; }
+
+  /* ── summary grid ── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .metric {
+    border: 1px solid #e8e8f0;
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+
+  .metric .label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: .4px;
+    margin-bottom: 4px;
+  }
+
+  .metric .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .metric.highlight { border-color: #f4b942; background: #fffbf0; }
+  .metric.highlight .value { color: #c07800; }
+
+  .metric.danger { border-color: #f4b4b4; background: #fff5f5; }
+  .metric.danger .value { color: #cc0000; }
+
+  .metric.good { border-color: #b4f4c8; background: #f0fff5; }
+  .metric.good .value { color: #007733; }
+
+  /* ── buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  button {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 14px;
+    transition: opacity .15s;
+  }
+
+  button:hover { opacity: .85; }
+
+  .btn-add    { background: #1a1a2e; color: #fff; }
+  .btn-remove { background: #f0f0f8; color: #555; }
+  .btn-export { background: #cc0000; color: #fff; margin-left: auto; }
+
+  .del-btn {
+    background: transparent;
+    color: #bbb;
+    padding: 0 6px;
+    font-size: 16px;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+  }
+  .del-btn:hover { color: #cc0000; }
+
+  .note {
+    font-size: 11px;
+    color: #999;
+    margin-top: 6px;
+  }
+
+  /* legend */
+  .legend {
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+<h1>RSU Tax Calculator</h1>
+<p class="subtitle">Broadcom — Schwab Equity Awards &nbsp;|&nbsp; Sell-to-Cover analysis</p>
+
+<!-- ─── Controls ─────────────────────────────────────── -->
+<div class="card">
+  <div class="controls">
+    <div class="field">
+      <label>Vesting Date</label>
+      <input type="date" id="vestingDate" value="2026-06-15">
+    </div>
+    <div class="field">
+      <label>RSU Tax Withholding %</label>
+      <input type="number" id="taxRate" value="55.25" step="0.01" min="0" max="100" style="width:130px">
+    </div>
+    <div class="field">
+      <label>Currency symbol</label>
+      <input type="text" id="currSym" value="$" maxlength="3" style="width:60px;text-align:center">
+    </div>
+  </div>
+</div>
+
+<!-- ─── Table ─────────────────────────────────────────── -->
+<div class="card">
+  <h2>Vesting Tranches</h2>
+
+  <div class="legend">
+    <span><span class="swatch" style="background:#fff9f0;border:1px solid #e8d8c0"></span> Input</span>
+    <span><span class="swatch" style="background:#f0f4ff;border:1px solid #c8d8f8"></span> Calculated</span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="rsuTable">
+      <thead>
+        <tr>
+          <th rowspan="2" style="text-align:left">Grant / Tranche</th>
+          <!-- Section A -->
+          <th colspan="3" style="text-align:center;background:#cc0000">A — RSU Grant</th>
+          <!-- Section B -->
+          <th colspan="2" style="text-align:center;background:#2255aa">B — Shares</th>
+          <!-- Section C -->
+          <th colspan="5" style="text-align:center;background:#226644">C — Sell-to-Cover</th>
+          <!-- Section D -->
+          <th colspan="3" style="text-align:center;background:#885500">D — Tax</th>
+          <!-- delete -->
+          <th rowspan="2" style="background:#111;width:28px"></th>
+        </tr>
+        <tr class="group-row">
+          <th style="background:#cc2222">RSU Gross</th>
+          <th style="background:#cc2222">Vest Price</th>
+          <th style="background:#cc2222">Gross Value</th>
+
+          <th style="background:#3366bb">Sold to Cover</th>
+          <th style="background:#3366bb">Net Shares</th>
+
+          <th style="background:#338866">Cost Basis</th>
+          <th style="background:#338866">Sale Price</th>
+          <th style="background:#338866">Sale Value</th>
+          <th style="background:#338866">Fee</th>
+          <th style="background:#338866">Net Proceeds</th>
+
+          <th style="background:#996600">Gain on S2C</th>
+          <th style="background:#996600">Actual Tax Paid</th>
+          <th style="background:#996600">Effective Rate</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <!-- rows injected by JS -->
+      </tbody>
+      <tfoot>
+        <tr class="total-row" id="totalRow">
+          <td>TOTAL</td>
+          <td id="tot-gross"></td>
+          <td>—</td>
+          <td id="tot-grossVal"></td>
+          <td id="tot-s2c"></td>
+          <td id="tot-net"></td>
+          <td id="tot-costBasis"></td>
+          <td>—</td>
+          <td id="tot-saleVal"></td>
+          <td id="tot-fee"></td>
+          <td id="tot-netProceeds"></td>
+          <td id="tot-gain"></td>
+          <td id="tot-taxPaid"></td>
+          <td id="tot-effRate"></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-add" onclick="addRow()">+ Add Tranche</button>
+    <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+  </div>
+  <p class="note">* Yellow cells are inputs. Blue cells are calculated automatically.</p>
+</div>
+
+<!-- ─── Summary ───────────────────────────────────────── -->
+<div class="card">
+  <h2>Tax Summary</h2>
+  <div class="summary-grid">
+    <div class="metric">
+      <div class="label">Total Gross Vesting Value</div>
+      <div class="value" id="sum-grossVal">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">RSU Tax Withholding %</div>
+      <div class="value" id="sum-taxRate">—</div>
+    </div>
+    <div class="metric highlight">
+      <div class="label">Tax I Should Have Paid</div>
+      <div class="value" id="sum-shouldPay">—</div>
+    </div>
+    <div class="metric highlight">
+      <div class="label">Tax I Actually Paid (Schwab)</div>
+      <div class="value" id="sum-didPay">—</div>
+    </div>
+    <div class="metric danger" id="card-overwithheld">
+      <div class="label">Schwab Over-Withheld Tax</div>
+      <div class="value" id="sum-overwithheld">—</div>
+    </div>
+    <div class="metric">
+      <div class="label">Total Proceeds from S2C</div>
+      <div class="value" id="sum-proceeds">—</div>
+    </div>
+    <div class="metric good">
+      <div class="label">Cash Returned to You</div>
+      <div class="value" id="sum-cashBack">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── data model ─────────────────────────────────────────────
+let rows = [];
+let nextId = 1;
+
+const defaults = [
+  { label: "Grant A",  gross: 150, vestPrice: 388.355, s2c: 85,  salePrice: 388.355, fee: 0.70,  actualTax: 32647.78 },
+  { label: "Grant B",  gross: 46,  vestPrice: 388.355, s2c: 26,  salePrice: 388.355, fee: 0.22,  actualTax: 10011.99 },
+  { label: "Grant C",  gross: 45,  vestPrice: 388.355, s2c: 26,  salePrice: 388.355, fee: 0.22,  actualTax: 9794.33  },
+];
+
+// ── helpers ────────────────────────────────────────────────
+function fmt(n, digits = 2) {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  const sym = document.getElementById("currSym").value || "$";
+  return sym + n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+
+function fmtPct(n) {
+  if (isNaN(n) || !isFinite(n)) return "—";
+  return n.toFixed(2) + "%";
+}
+
+function numOf(id) {
+  return parseFloat(document.getElementById(id)?.value) || 0;
+}
+
+// ── row calculation ────────────────────────────────────────
+function calcRow(r) {
+  const c = {};
+  c.grossVal   = r.gross * r.vestPrice;                          // A
+  c.netShares  = r.gross - r.s2c;                                // B
+  c.costBasis  = r.s2c * r.vestPrice;                            // C
+  c.saleVal    = r.s2c * r.salePrice;                            // C
+  c.netProc    = c.saleVal - r.fee;                              // C
+  c.gain       = c.netProc - c.costBasis;                        // D
+  c.effRate    = r.gross > 0 ? (r.actualTax / c.grossVal) * 100 : 0; // D
+  return c;
+}
+
+// ── render one row ─────────────────────────────────────────
+function renderRow(r) {
+  const c = calcRow(r);
+  const tr = document.createElement("tr");
+  tr.id = "row-" + r.id;
+
+  const gainColor = c.gain > 0.01 ? "#007733" : c.gain < -0.01 ? "#cc0000" : "#888";
+
+  tr.innerHTML = `
+    <td class="tag-input"><input class="cell-input" style="text-align:left;width:100px"
+        value="${r.label}" onchange="updateField(${r.id},'label',this.value)"></td>
+
+    <td class="tag-input"><input class="cell-input" type="number" value="${r.gross}"
+        onchange="updateField(${r.id},'gross',+this.value)"></td>
+    <td class="tag-input"><input class="cell-input" type="number" step="0.001" value="${r.vestPrice}"
+        onchange="updateField(${r.id},'vestPrice',+this.value)"></td>
+    <td class="tag-calc computed">${fmt(c.grossVal, 3)}</td>
+
+    <td class="tag-input"><input class="cell-input" type="number" value="${r.s2c}"
+        onchange="updateField(${r.id},'s2c',+this.value)"></td>
+    <td class="tag-calc computed">${c.netShares}</td>
+
+    <td class="tag-calc computed">${fmt(c.costBasis, 2)}</td>
+    <td class="tag-input"><input class="cell-input" type="number" step="0.001" value="${r.salePrice}"
+        onchange="updateField(${r.id},'salePrice',+this.value)"></td>
+    <td class="tag-calc computed">${fmt(c.saleVal, 2)}</td>
+    <td class="tag-input"><input class="cell-input" type="number" step="0.01" value="${r.fee}"
+        onchange="updateField(${r.id},'fee',+this.value)"></td>
+    <td class="tag-calc computed">${fmt(c.netProc, 2)}</td>
+
+    <td class="tag-calc computed" style="color:${gainColor}">${fmt(c.gain, 2)}</td>
+    <td class="tag-input"><input class="cell-input" type="number" step="0.01" value="${r.actualTax}"
+        onchange="updateField(${r.id},'actualTax',+this.value)"></td>
+    <td class="tag-calc computed">${fmtPct(c.effRate)}</td>
+
+    <td><button class="del-btn" onclick="deleteRow(${r.id})" title="Remove row">×</button></td>
+  `;
+  return tr;
+}
+
+// ── update data + re-render ────────────────────────────────
+function updateField(id, field, val) {
+  const r = rows.find(r => r.id === id);
+  if (!r) return;
+  r[field] = val;
+  // re-render just this row
+  const existing = document.getElementById("row-" + id);
+  const newTr = renderRow(r);
+  existing.replaceWith(newTr);
+  updateTotals();
+}
+
+function updateTotals() {
+  const sym = document.getElementById("currSym").value || "$";
+  const taxRate = numOf("taxRate") / 100;
+
+  let totGross = 0, totGrossVal = 0, totS2C = 0, totNet = 0;
+  let totCostBasis = 0, totSaleVal = 0, totFee = 0, totNetProc = 0;
+  let totGain = 0, totTaxPaid = 0;
+
+  for (const r of rows) {
+    const c = calcRow(r);
+    totGross     += r.gross;
+    totGrossVal  += c.grossVal;
+    totS2C       += r.s2c;
+    totNet       += c.netShares;
+    totCostBasis += c.costBasis;
+    totSaleVal   += c.saleVal;
+    totFee       += r.fee;
+    totNetProc   += c.netProc;
+    totGain      += c.gain;
+    totTaxPaid   += r.actualTax;
+  }
+
+  const totEffRate = totGrossVal > 0 ? (totTaxPaid / totGrossVal) * 100 : 0;
+  const shouldPay  = totGrossVal * taxRate;
+  const overWith   = totTaxPaid - shouldPay;
+  const cashBack   = totNetProc - totTaxPaid;
+
+  // footer totals
+  setText("tot-gross",      totGross);
+  setText("tot-grossVal",   fmt(totGrossVal, 3));
+  setText("tot-s2c",        totS2C);
+  setText("tot-net",        totNet);
+  setText("tot-costBasis",  fmt(totCostBasis, 2));
+  setText("tot-saleVal",    fmt(totSaleVal, 2));
+  setText("tot-fee",        fmt(totFee, 3));
+  setText("tot-netProceeds",fmt(totNetProc, 2));
+  setText("tot-gain",       fmt(totGain, 2));
+  setText("tot-taxPaid",    fmt(totTaxPaid, 2));
+  setText("tot-effRate",    fmtPct(totEffRate));
+
+  // summary cards
+  setText("sum-grossVal",   fmt(totGrossVal, 2));
+  setText("sum-taxRate",    numOf("taxRate").toFixed(2) + "%");
+  setText("sum-shouldPay",  fmt(shouldPay, 2));
+  setText("sum-didPay",     fmt(totTaxPaid, 2));
+  setText("sum-overwithheld", fmt(Math.abs(overWith), 2));
+  setText("sum-proceeds",   fmt(totNetProc, 2));
+  setText("sum-cashBack",   fmt(cashBack, 2));
+
+  // flip over-withheld card colour
+  const card = document.getElementById("card-overwithheld");
+  const label = card.querySelector(".label");
+  if (overWith < -0.01) {
+    card.className = "metric good";
+    label.textContent = "Schwab Under-Withheld Tax (you owe)";
+  } else {
+    card.className = "metric danger";
+    label.textContent = "Schwab Over-Withheld Tax (refund to you)";
+  }
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ── add / delete rows ──────────────────────────────────────
+function addRow(data = {}) {
+  const r = {
+    id:        nextId++,
+    label:     data.label     ?? ("Grant " + String.fromCharCode(64 + nextId - 1)),
+    gross:     data.gross     ?? 0,
+    vestPrice: data.vestPrice ?? 0,
+    s2c:       data.s2c       ?? 0,
+    salePrice: data.salePrice ?? 0,
+    fee:       data.fee       ?? 0,
+    actualTax: data.actualTax ?? 0,
+  };
+  rows.push(r);
+  document.getElementById("tableBody").appendChild(renderRow(r));
+  updateTotals();
+}
+
+function deleteRow(id) {
+  rows = rows.filter(r => r.id !== id);
+  document.getElementById("row-" + id)?.remove();
+  updateTotals();
+}
+
+// ── export CSV ────────────────────────────────────────────
+function exportCSV() {
+  const date = document.getElementById("vestingDate").value;
+  const headers = [
+    "Tranche","RSU Gross","Vest Price","Gross Value","Sold to Cover","Net Shares",
+    "Cost Basis","Sale Price","Sale Value","Fee","Net Proceeds","Gain on S2C",
+    "Actual Tax Paid","Effective Rate"
+  ];
+  const lines = [headers.join(",")];
+  for (const r of rows) {
+    const c = calcRow(r);
+    lines.push([
+      r.label, r.gross, r.vestPrice, c.grossVal.toFixed(3),
+      r.s2c, c.netShares, c.costBasis.toFixed(2), r.salePrice,
+      c.saleVal.toFixed(2), r.fee.toFixed(3), c.netProc.toFixed(2),
+      c.gain.toFixed(2), r.actualTax.toFixed(2), (c.effRate).toFixed(2)+"%"
+    ].join(","));
+  }
+  const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `RSU-${date}.csv`;
+  a.click();
+}
+
+// ── wire up live-updating inputs ──────────────────────────
+document.getElementById("taxRate").addEventListener("input", updateTotals);
+document.getElementById("currSym").addEventListener("input", () => {
+  // full re-render needed for currency symbol
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+  for (const r of rows) tbody.appendChild(renderRow(r));
+  updateTotals();
+});
+
+// ── init with example data ────────────────────────────────
+defaults.forEach(addRow);
+</script>
+</body>
+</html>
