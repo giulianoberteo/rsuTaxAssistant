@@ -6,6 +6,15 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.3.0] 2026-06-19 — GBP equivalent in Tax Summary
+
+### Added
+- "GBP Rate (1 USD =)" input in the controls bar (default 0.787); updates live
+- Every monetary Tax Summary card now shows the GBP equivalent below the USD value, separated by a dashed divider
+- `fmtGBP()` helper converts any USD amount using the live exchange rate
+
+---
+
 ## [1.2.0] 2026-06-19 — Readability improvements
 
 ### Changed

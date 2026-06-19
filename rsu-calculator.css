@@ -195,6 +195,15 @@ td input.cell-input:focus { border-bottom-color: #cc0000; }
   color: #1a1a2e;
 }
 
+.metric .sub-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px dashed #ddd;
+}
+
 .metric.highlight            { border-color: #f4b942; background: #fffbf0; }
 .metric.highlight .value     { color: #c07800; }
 .metric.danger               { border-color: #f4b4b4; background: #fff5f5; }
