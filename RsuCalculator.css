@@ -131,7 +131,7 @@ tbody tr td {
 
 tbody tr td:first-child { text-align: left; }
 
-tbody tr:hover td { background: #fafbff; }
+tbody tr:hover td { background: #fff3e0; }
 
 /* ── TOTAL row — light grey, bold black ── */
 .total-row td {
