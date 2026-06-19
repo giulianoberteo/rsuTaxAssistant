@@ -193,7 +193,7 @@ function calcRow(r) {
   c.saleVal    = r.s2c * r.salePrice;
   c.netProc    = c.saleVal - r.fee;
   c.gain       = c.netProc - c.costBasis;
-  c.s2cTaxPct  = c.saleVal > 0 ? (r.actualTax / c.saleVal) * 100 : 0;
+  c.s2cTaxPct  = c.grossVal > 0 ? (c.netProc / c.grossVal) * 100 : 0;
   c.effRate    = r.gross > 0 ? (r.actualTax / c.grossVal) * 100 : 0;
   return c;
 }
