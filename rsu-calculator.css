@@ -140,6 +140,7 @@ tbody tr:hover td { background: #fafbff; }
   color: #000;
   border-top: 2px solid #b0b0b0;
   border-bottom: none;
+  padding: 16px 10px;
 }
 
 /* ── cell types ── */
