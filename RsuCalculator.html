@@ -54,7 +54,7 @@
           <!-- Section C -->
           <th colspan="5" class="th-sect-c">C — Sell-to-Cover</th>
           <!-- Section D -->
-          <th colspan="3" class="th-sect-d">D — Tax</th>
+          <th colspan="4" class="th-sect-d">D — Tax</th>
           <!-- delete -->
           <th rowspan="2" class="th-del"></th>
         </tr>
@@ -74,6 +74,7 @@
 
           <th class="th-sub-d">Gain on S2C</th>
           <th class="th-sub-d">Actual Tax Paid</th>
+          <th class="th-sub-d">S2C Tax %</th>
           <th class="th-sub-d">Effective Rate</th>
         </tr>
       </thead>
@@ -95,6 +96,7 @@
           <td id="tot-netProceeds"></td>
           <td id="tot-gain"></td>
           <td id="tot-taxPaid"></td>
+          <td id="tot-s2cTaxPct"></td>
           <td id="tot-effRate"></td>
           <td></td>
         </tr>
@@ -191,6 +193,7 @@ function calcRow(r) {
   c.saleVal    = r.s2c * r.salePrice;
   c.netProc    = c.saleVal - r.fee;
   c.gain       = c.netProc - c.costBasis;
+  c.s2cTaxPct  = c.saleVal > 0 ? (r.actualTax / c.saleVal) * 100 : 0;
   c.effRate    = r.gross > 0 ? (r.actualTax / c.grossVal) * 100 : 0;
   return c;
 }
@@ -228,6 +231,7 @@ function renderRow(r) {
     <td class="tag-calc computed" style="color:${gainColor}">${fmt(c.gain, 2)}</td>
     <td class="tag-input"><input class="cell-input" type="number" step="0.01" value="${r.actualTax}"
         onchange="updateField(${r.id},'actualTax',+this.value)"></td>
+    <td class="tag-calc computed">${fmtPct(c.s2cTaxPct)}</td>
     <td class="tag-calc computed">${fmtPct(c.effRate)}</td>
 
     <td><button class="del-btn" onclick="deleteRow(${r.id})" title="Remove row">×</button></td>
@@ -266,7 +270,8 @@ function updateTotals() {
     totTaxPaid   += r.actualTax;
   }
 
-  const totEffRate = totGrossVal > 0 ? (totTaxPaid / totGrossVal) * 100 : 0;
+  const totS2CTaxPct = totSaleVal > 0 ? (totTaxPaid / totSaleVal) * 100 : 0;
+  const totEffRate   = totGrossVal > 0 ? (totTaxPaid / totGrossVal) * 100 : 0;
   const shouldPay  = totGrossVal * taxRate;
   const overWith   = totTaxPaid - shouldPay;
   const cashBack   = totNetProc - totTaxPaid;
@@ -281,6 +286,7 @@ function updateTotals() {
   setText("tot-netProceeds", fmt(totNetProc, 2));
   setText("tot-gain",        fmt(totGain, 2));
   setText("tot-taxPaid",     fmt(totTaxPaid, 2));
+  setText("tot-s2cTaxPct",  fmtPct(totS2CTaxPct));
   setText("tot-effRate",     fmtPct(totEffRate));
 
   setText("sum-grossVal",        fmt(totGrossVal, 2));
