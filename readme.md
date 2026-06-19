@@ -68,7 +68,3 @@ Given the details of a sell-to-cover vesting event, the calculator:
 | Cash Returned to You | Total Net Proceeds − Tax I Actually Paid |
 
 ---
-
-## Reference data
-
-`RSU-Excel-Calculator.png` — screenshot of the original Excel model this calculator is based on (Broadcom vesting 15/06/2026).
