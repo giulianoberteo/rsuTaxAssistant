@@ -6,6 +6,15 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.2.0] 2026-06-19 — Readability improvements
+
+### Changed
+- Data rows: padding increased from 6px to 10px (taller rows, easier to scan)
+- Table headers: lightened from dark charcoal (~#3a–#6a) to medium grey (~#6b–#96) for less visual weight
+- TOTAL row: fill changed from light blue to light grey (`#e8e8e8`) with grey top border
+
+---
+
 ## [1.1.0] 2026-06-19 — Style refactor and visual polish
 
 ### Changed

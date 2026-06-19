@@ -87,7 +87,7 @@ table {
 
 /* default header cell */
 thead tr th {
-  background: #3a3a3a;
+  background: #6b6b6b;
   color: #fff;
   font-weight: 600;
   font-size: 11px;
@@ -95,7 +95,7 @@ thead tr th {
   letter-spacing: .4px;
   padding: 8px 10px;
   text-align: right;
-  border-right: 1px solid rgba(255,255,255,.10);
+  border-right: 1px solid rgba(255,255,255,.12);
 }
 
 thead tr th:first-child { text-align: left; border-radius: 4px 0 0 0; }
@@ -103,27 +103,27 @@ thead tr th:last-child  { border-radius: 0 4px 0 0; border-right: none; }
 
 thead tr.group-row th {
   font-size: 10px;
-  color: #ddd;
+  color: #eee;
   letter-spacing: .6px;
   padding: 4px 10px;
 }
 
-/* ── section header row (top colspan row) — 4 distinct grey shades ── */
-.th-sect-a { background: #3a3a3a; text-align: center; }
-.th-sect-b { background: #525252; text-align: center; }
-.th-sect-c { background: #444444; text-align: center; }
-.th-sect-d { background: #5c5c5c; text-align: center; }
-.th-del    { background: #222; width: 28px; }
+/* ── section header row (top colspan row) — 4 distinct medium-grey shades ── */
+.th-sect-a { background: #6b6b6b; text-align: center; }
+.th-sect-b { background: #7d7d7d; text-align: center; }
+.th-sect-c { background: #737373; text-align: center; }
+.th-sect-d { background: #888888; text-align: center; }
+.th-del    { background: #555; width: 28px; }
 
 /* ── sub-header row — slightly lighter than their section ── */
-.th-sub-a { background: #484848; }
-.th-sub-b { background: #606060; }
-.th-sub-c { background: #525252; }
-.th-sub-d { background: #6a6a6a; }
+.th-sub-a { background: #787878; }
+.th-sub-b { background: #8a8a8a; }
+.th-sub-c { background: #808080; }
+.th-sub-d { background: #969696; }
 
 /* ── body rows ── */
 tbody tr td {
-  padding: 6px 10px;
+  padding: 10px 10px;
   border-bottom: 1px solid #eef;
   text-align: right;
   vertical-align: middle;
@@ -133,12 +133,12 @@ tbody tr td:first-child { text-align: left; }
 
 tbody tr:hover td { background: #fafbff; }
 
-/* ── TOTAL row — light blue, bold black ── */
+/* ── TOTAL row — light grey, bold black ── */
 .total-row td {
-  background: #cce5ff;
+  background: #e8e8e8;
   font-weight: 700;
   color: #000;
-  border-top: 2px solid #6aadff;
+  border-top: 2px solid #b0b0b0;
   border-bottom: none;
 }
 
