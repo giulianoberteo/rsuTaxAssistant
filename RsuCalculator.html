@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<h1>RSU Tax Calculator</h1>
+<h1 id="mainTitle">RSU Tax Calculator</h1>
+<div id="easterEgg" style="display:none;text-align:center;font-size:2.5rem;font-weight:bold;color:#c0392b;letter-spacing:0.05em;margin:0.25rem 0">PORCO DIO !!!</div>
 <p class="subtitle">Broadcom — Schwab Equity Awards &nbsp;|&nbsp; Sell-to-Cover analysis</p>
 
 <!-- ─── Controls ─────────────────────────────────────── -->
@@ -379,6 +380,17 @@ document.getElementById("currSym").addEventListener("input", () => {
 
 // ── init with example data ────────────────────────────────
 defaults.forEach(addRow);
+
+// ── Easter egg ────────────────────────────────────────────
+(function() {
+  let clicks = 0;
+  const egg = document.getElementById('easterEgg');
+  document.getElementById('mainTitle').addEventListener('click', function() {
+    clicks++;
+    if (clicks === 3) { egg.style.display = 'block'; }
+    else if (clicks === 6) { egg.style.display = 'none'; clicks = 0; }
+  });
+})();
 </script>
 </body>
 </html>
