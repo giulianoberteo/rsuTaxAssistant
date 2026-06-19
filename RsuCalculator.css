@@ -131,9 +131,7 @@ tbody tr td {
 
 tbody tr td:first-child { text-align: left; }
 
-tbody tr:hover td,
-tbody tr:hover td.tag-input,
-tbody tr:hover td.tag-calc { background: #fff3e0; }
+tbody tr:hover td { background: #fff3e0 !important; }
 
 /* ── TOTAL row — light grey, bold black ── */
 .total-row td {
