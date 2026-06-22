@@ -116,35 +116,48 @@
 <div class="card">
   <h2>Tax Summary</h2>
   <div class="summary-grid">
-    <div class="metric">
+    
+    <div class="metric blue">
       <div class="label">Total Gross Vesting Value</div>
       <div class="value" id="sum-grossVal">—</div>
       <div class="sub-value" id="sum-grossVal-gbp">—</div>
     </div>
-    <div class="metric">
+    
+    <div class="metric blue">
       <div class="label">RSU Tax Withholding %</div>
       <div class="value" id="sum-taxRate">—</div>
     </div>
+    
+    <div class="metric good">
+      <div class="label">Total Net Proceeds</div>
+      <div class="value" id="sum-netProceeds">—</div>
+      <div class="sub-value" id="sum-netProceeds-gbp">—</div>
+    </div>
+    
     <div class="metric highlight">
       <div class="label">Tax I Should Have Paid</div>
       <div class="value" id="sum-shouldPay">—</div>
       <div class="sub-value" id="sum-shouldPay-gbp">—</div>
     </div>
+    
     <div class="metric highlight">
       <div class="label">Tax I Actually Paid (Schwab)</div>
       <div class="value" id="sum-didPay">—</div>
       <div class="sub-value" id="sum-didPay-gbp">—</div>
     </div>
+    
     <div class="metric danger" id="card-overwithheld">
       <div class="label">Schwab Over-Withheld Tax</div>
       <div class="value" id="sum-overwithheld">—</div>
       <div class="sub-value" id="sum-overwithheld-gbp">—</div>
     </div>
+    
     <div class="metric">
       <div class="label">Total Proceeds from S2C</div>
       <div class="value" id="sum-proceeds">—</div>
       <div class="sub-value" id="sum-proceeds-gbp">—</div>
     </div>
+    
     <div class="metric good">
       <div class="label">Cash balance returned</div>
       <div class="value" id="sum-cashBack">—</div>
@@ -292,6 +305,8 @@ function updateTotals() {
 
   setText("sum-grossVal",        fmt(totGrossVal, 2));
   setText("sum-grossVal-gbp",    fmtGBP(totGrossVal));
+  setText("sum-netProceeds",     fmt(totNetProc, 2));
+  setText("sum-netProceeds-gbp", fmtGBP(totNetProc));
   setText("sum-taxRate",         numOf("taxRate").toFixed(2) + "%");
   setText("sum-shouldPay",       fmt(shouldPay, 2));
   setText("sum-shouldPay-gbp",   fmtGBP(shouldPay));

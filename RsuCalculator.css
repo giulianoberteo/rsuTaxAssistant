@@ -210,6 +210,8 @@ td input.cell-input:focus { border-bottom-color: #cc0000; }
 .metric.danger .value        { color: #cc0000; }
 .metric.good                 { border-color: #b4f4c8; background: #f0fff5; }
 .metric.good .value          { color: #007733; }
+.metric.blue                 { border-color: #c8d8f8; background: #f0f4ff; }
+.metric.blue .value          { color: #1a56c4; }
 
 /* ── buttons ── */
 .btn-row {

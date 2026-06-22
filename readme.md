@@ -60,11 +60,14 @@ Given the details of a sell-to-cover vesting event, the calculator:
 
 ### Summary cards
 
-| Card | Formula |
-|---|---|
-| Tax I Should Have Paid | Total Gross Value × Withholding % |
-| Tax I Actually Paid | Σ Actual Tax Paid (from Schwab) |
-| Schwab Over-Withheld | Actually Paid − Should Have Paid |
-| Cash Returned to You | Total Net Proceeds − Tax I Actually Paid |
+| Card | Colour | Formula |
+|---|---|---|
+| Total Gross Vesting Value | Blue | Σ (RSU Gross × Vest Price) |
+| RSU Tax Withholding % | Blue | Input value |
+| Total Net Proceeds | Green | Σ (Sale Value − Fee) |
+| Tax I Should Have Paid | Yellow | Total Gross Value × Withholding % |
+| Tax I Actually Paid | Yellow | Σ Actual Tax Paid (from Schwab) |
+| Schwab Over-Withheld | Red/Green | Actually Paid − Should Have Paid |
+| Cash Balance Returned | Green | Total Net Proceeds − Tax I Actually Paid |
 
 ---

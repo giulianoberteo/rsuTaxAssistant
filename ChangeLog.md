@@ -6,6 +6,17 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.4.0] 2026-06-22 — Summary card fixes and colour coding
+
+### Fixed
+- "Total Net Proceeds" summary card was not displaying its value due to a duplicate `id="tot-netProceeds"` shared with the table footer; renamed card IDs to `sum-netProceeds` / `sum-netProceeds-gbp` and wired up the JS calls
+
+### Changed
+- "Total Net Proceeds" card is now green (same style as "Cash balance returned")
+- "Total Gross Vesting Value" and "RSU Tax Withholding %" cards are now blue, matching the calculated-cell colour used in the table
+
+---
+
 ## [1.3.0] 2026-06-19 — GBP equivalent in Tax Summary
 
 ### Added
