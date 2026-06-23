@@ -133,6 +133,12 @@
       <div class="value" id="sum-netProceeds">—</div>
       <div class="sub-value" id="sum-netProceeds-gbp">—</div>
     </div>
+
+    <div class="metric" id="card-capGainLoss">
+      <div class="label">S2C Capital Gain / Loss</div>
+      <div class="value" id="sum-capGainLoss">—</div>
+      <div class="sub-value" id="sum-capGainLoss-gbp">—</div>
+    </div>
     
     <div class="metric highlight">
       <div class="label">Tax I Should Have Paid</div>
@@ -319,6 +325,18 @@ function updateTotals() {
   setText("sum-cashBack",        fmt(cashBack, 2));
   setText("sum-cashBack-gbp",    fmtGBP(cashBack));
 
+  const capCard  = document.getElementById("card-capGainLoss");
+  const capLabel = capCard.querySelector(".label");
+  setText("sum-capGainLoss",     fmt(Math.abs(totGain), 2));
+  setText("sum-capGainLoss-gbp", fmtGBP(Math.abs(totGain)));
+  if (totGain >= -0.01) {
+    capCard.className = "metric good";
+    capLabel.textContent = "S2C Capital Gain";
+  } else {
+    capCard.className = "metric danger";
+    capLabel.textContent = "S2C Capital Loss";
+  }
+
   const card  = document.getElementById("card-overwithheld");
   const label = card.querySelector(".label");
   if (overWith < -0.01) {
@@ -328,11 +346,45 @@ function updateTotals() {
     card.className = "metric danger";
     label.textContent = "Schwab Over-Withheld Tax (Payroll Refund?)";
   }
+
+  saveState();
 }
 
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
+}
+
+// ── persistence ───────────────────────────────────────────
+const STORAGE_KEY = "rsuCalc_v1";
+
+function saveState() {
+  const controls = {
+    vestingDate: document.getElementById("vestingDate").value,
+    taxRate:     document.getElementById("taxRate").value,
+    currSym:     document.getElementById("currSym").value,
+    gbpRate:     document.getElementById("gbpRate").value,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ controls, rows }));
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!saved) return false;
+    const { controls, rows: savedRows } = saved;
+    if (controls) {
+      if (controls.vestingDate) document.getElementById("vestingDate").value = controls.vestingDate;
+      if (controls.taxRate)     document.getElementById("taxRate").value     = controls.taxRate;
+      if (controls.currSym)     document.getElementById("currSym").value     = controls.currSym;
+      if (controls.gbpRate)     document.getElementById("gbpRate").value     = controls.gbpRate;
+    }
+    if (savedRows && savedRows.length > 0) {
+      savedRows.forEach(r => addRow(r));
+      return true;
+    }
+  } catch (e) {}
+  return false;
 }
 
 // ── add / delete rows ──────────────────────────────────────
@@ -384,6 +436,7 @@ function exportCSV() {
 }
 
 // ── wire up live-updating inputs ──────────────────────────
+document.getElementById("vestingDate").addEventListener("input", saveState);
 document.getElementById("taxRate").addEventListener("input", updateTotals);
 document.getElementById("gbpRate").addEventListener("input", updateTotals);
 document.getElementById("currSym").addEventListener("input", () => {
@@ -393,8 +446,8 @@ document.getElementById("currSym").addEventListener("input", () => {
   updateTotals();
 });
 
-// ── init with example data ────────────────────────────────
-defaults.forEach(addRow);
+// ── init: restore saved state or load example data ────────
+if (!loadState()) defaults.forEach(addRow);
 
 // ── Easter egg ────────────────────────────────────────────
 (function() {

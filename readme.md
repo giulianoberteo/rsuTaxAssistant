@@ -24,9 +24,11 @@ Given the details of a sell-to-cover vesting event, the calculator:
 |---|---|
 | Multi-tranche support | Add or remove grant rows dynamically |
 | Live recalculation | Every cell updates instantly on any input change |
+| Persistent state | All inputs auto-saved to `localStorage`; restored on page reload |
 | Configurable tax rate | Set your RSU withholding % (e.g. 55.25%) |
 | Currency symbol | Switchable ($ default; change to £, €, etc.) |
 | Over/under detection | Summary card flips red ↔ green depending on direction |
+| S2C Capital Gain/Loss | Summary card shows gain or loss vs vest price, for self-assessment |
 | CSV export | Downloads a full breakdown for the vesting date |
 | Pre-loaded example | Ships with the 15 Jun 2026 Broadcom vesting as a worked example |
 | Zero dependencies | Pure HTML + CSS + vanilla JS, single file |
@@ -65,6 +67,7 @@ Given the details of a sell-to-cover vesting event, the calculator:
 | Total Gross Vesting Value | Blue | Σ (RSU Gross × Vest Price) |
 | RSU Tax Withholding % | Blue | Input value |
 | Total Net Proceeds | Green | Σ (Sale Value − Fee) |
+| S2C Capital Gain / Loss | Green/Red | Σ (Net Proceeds − Cost Basis) |
 | Tax I Should Have Paid | Yellow | Total Gross Value × Withholding % |
 | Tax I Actually Paid | Yellow | Σ Actual Tax Paid (from Schwab) |
 | Schwab Over-Withheld | Red/Green | Actually Paid − Should Have Paid |

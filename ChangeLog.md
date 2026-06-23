@@ -6,6 +6,14 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.5.0] 2026-06-23 — Persistent state + S2C Capital Gain/Loss card
+
+### Added
+- All inputs (controls + table rows) are now saved to `localStorage` automatically on every change and restored on page load — data survives browser refresh
+- New **S2C Capital Gain / Loss** summary card: shows green "S2C Capital Gain" or red "S2C Capital Loss" depending on whether the sell-to-cover sale price was above or below the vest price, with GBP equivalent
+
+---
+
 ## [1.4.0] 2026-06-22 — Summary card fixes and colour coding
 
 ### Fixed
