@@ -70,6 +70,7 @@ Given the details of a sell-to-cover vesting event, the calculator:
 | S2C Capital Gain / Loss | Green/Red | Σ (Net Proceeds − Cost Basis) |
 | Tax I Should Have Paid | Yellow | Total Gross Value × Withholding % |
 | Tax I Actually Paid | Yellow | Σ Actual Tax Paid (from Schwab) |
+| Total Proceeds from S2C | Orange | Σ Net Proceeds (money that went to tax) |
 | Schwab Over-Withheld | Red/Green | Actually Paid − Should Have Paid |
 | Cash Balance Returned | Green | Total Net Proceeds − Tax I Actually Paid |
 

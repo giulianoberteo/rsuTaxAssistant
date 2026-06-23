@@ -6,6 +6,13 @@ Format: `[version] YYYY-MM-DD — summary`
 
 ---
 
+## [1.5.1] 2026-06-23 — Orange colour for Total Proceeds from S2C card
+
+### Changed
+- "Total Proceeds from S2C" summary card is now orange (`metric.orange`) to visually signal that this money went to tax withholding
+
+---
+
 ## [1.5.0] 2026-06-23 — Persistent state + S2C Capital Gain/Loss card
 
 ### Added
